@@ -1,0 +1,162 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - Dockerfile
+      - .github/workflows/build.yml
+permissions: write-all
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Alpine
+          - base: "alpine"
+            version: "latest"
+          - base: "alpine"
+            version: "3"
+          - base: "alpine"
+            version: "3.16"
+          - base: "alpine"
+            version: "3.15"
+          - base: "alpine"
+            version: "3.14"
+          - base: "alpine"
+            version: "3.13"
+          - base: "alpine"
+            version: "3.12"
+          - base: "alpine"
+            version: "3.11"
+          - base: "alpine"
+            version: "3.10"
+          - base: "alpine"
+            version: "3.9"
+          - base: "alpine"
+            version: "3.8"
+          - base: "alpine"
+            version: "3.7"
+          - base: "alpine"
+            version: "3.6"
+          - base: "alpine"
+            version: "3.5"
+          - base: "alpine"
+            version: "3.4"
+          - base: "alpine"
+            version: "3.3"
+          - base: "alpine"
+            version: "3.2"
+          - base: "alpine"
+            version: "3.1"
+
+          # Ubuntu
+          - base: "ubuntu"
+            version: "latest"
+          - base: "ubuntu"
+            version: "22.04"
+          - base: "ubuntu"
+            version: "20.04"
+          - base: "ubuntu"
+            version: "18.04"
+          - base: "ubuntu"
+            version: "16.04"
+          - base: "ubuntu"
+            version: "14.04"
+          - base: "ubuntu"
+            version: "12.04"
+
+          # Debian
+          - base: "debian"
+            version: "latest"
+          - base: "debian"
+            version: "11"
+          - base: "debian"
+            version: "11-slim"
+          - base: "debian"
+            version: "10"
+          - base: "debian"
+            version: "10-slim"
+          - base: "debian"
+            version: "9"
+          - base: "debian"
+            version: "9-slim"
+          - base: "debian"
+            version: "8"
+          - base: "debian"
+            version: "8-slim"
+          - base: "debian"
+            version: "7"
+          - base: "debian"
+            version: "7-slim"
+
+          # CentOS
+          - base: "centos"
+            version: "latest"
+          - base: "centos"
+            version: "8"
+          - base: "centos"
+            version: "7"
+          - base: "centos"
+            version: "6"
+          - base: "centos"
+            version: "5"
+
+    name: Build ${{ matrix.base}}-${{ matrix.version }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_PASSWD }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64
+          push: true
+          build-args: |
+            BASE=${{ matrix.base }}
+            VERSION=${{ matrix.version }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/s6-overlay:${{ matrix.base }}-${{ matrix.version }}
+            ${{ github.repository_owner }}/s6-overlay:${{ matrix.base }}-${{ matrix.version }}
+  final:
+    name: Clean-up and add README
+    if: ${{ always() }}
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete untagged
+        uses: dylanratcliffe/delete-untagged-containers@main
+        with:
+          package_name: s6-overlay
+          token: ${{ secrets.PAT }}
+          user: ${{ github.repository_owner }}
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_PASSWD }}
+          repository: ${{ github.repository_owner }}/s6-overlay
+          short-description: "base OS images with S6 overlay."
+          readme-filepath: README.md
