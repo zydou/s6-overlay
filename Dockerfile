@@ -6,7 +6,7 @@ FROM ${BASE}:${VERSION}
 COPY --from=shinsenter/s6-overlay / /
 
 # Tweak for alpine
-RUN if [ -x "$(command -v apk)" ] ; then apk add --no-cache shadow ; fi
+RUN if [ -x "$(command -v apk)" ] ; then apk add --no-cache bash shadow ; fi
 
 ## add PUID and PGID support
 COPY 10-adduser /etc/cont-init.d/10-adduser
