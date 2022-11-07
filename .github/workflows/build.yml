@@ -210,43 +210,43 @@ jobs:
 
           # Python Debian
           - base: "python"
-            version: "3-buster"
+            version: "3-slim-buster"
           - base: "python"
-            version: "3-bullseye"
+            version: "3-slim-bullseye"
           - base: "python"
-            version: "3-stretch"
+            version: "3-slim-stretch"
           - base: "python"
-            version: "3-jessie"
+            version: "3-slim-jessie"
           - base: "python"
-            version: "3.11-buster"
+            version: "3.11-slim-buster"
           - base: "python"
-            version: "3.11-bullseye"
+            version: "3.11-slim-bullseye"
           - base: "python"
-            version: "3.10-buster"
+            version: "3.10-slim-buster"
           - base: "python"
-            version: "3.10-bullseye"
+            version: "3.10-slim-bullseye"
           - base: "python"
-            version: "3.9-buster"
+            version: "3.9-slim-buster"
           - base: "python"
-            version: "3.9-bullseye"
+            version: "3.9-slim-bullseye"
           - base: "python"
-            version: "3.8-buster"
+            version: "3.8-slim-buster"
           - base: "python"
-            version: "3.8-bullseye"
+            version: "3.8-slim-bullseye"
           - base: "python"
-            version: "3.7-buster"
+            version: "3.7-slim-buster"
           - base: "python"
-            version: "3.7-bullseye"
+            version: "3.7-slim-bullseye"
           - base: "python"
-            version: "3.7-stretch"
+            version: "3.7-slim-stretch"
           - base: "python"
-            version: "3.6-buster"
+            version: "3.6-slim-buster"
           - base: "python"
-            version: "3.6-bullseye"
+            version: "3.6-slim-bullseye"
           - base: "python"
-            version: "3.6-stretch"
+            version: "3.6-slim-stretch"
           - base: "python"
-            version: "3.6-jessie"
+            version: "3.6-slim-jessie"
     name: Build ${{ matrix.base}}-${{ matrix.version }}
     runs-on: ubuntu-latest
     steps:
@@ -296,7 +296,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v3
       - name: Docker Hub Description
-        uses: peter-evans/dockerhub-description@v2
+        uses: peter-evans/dockerhub-description@main
         with:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKER_PASSWD }}
