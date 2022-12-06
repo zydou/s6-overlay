@@ -10,9 +10,8 @@ RUN if [ -x "$(command -v apk)" ] ; then apk add --no-cache bash shadow ; fi
 
 ## add PUID and PGID support
 COPY 10-adduser /etc/cont-init.d/10-adduser
-RUN groupmod -g 1000 users && \
-    useradd -u 911 -U -d /app -s /bin/false abc && \
-    usermod -G users abc
+RUN groupadd --gid 1000 abc && \
+    useradd -u 1000 -g 1000 --create-home -d /app -s /bin/false abc
 
 # important: sets s6-overlay entrypoint
 ENTRYPOINT ["/init"]
