@@ -20,6 +20,8 @@ jobs:
           - base: "alpine"
             version: "3"
           - base: "alpine"
+            version: "3.17"
+          - base: "alpine"
             version: "3.16"
           - base: "alpine"
             version: "3.15"
@@ -41,8 +43,6 @@ jobs:
             version: "3.7"
           - base: "alpine"
             version: "3.6"
-          - base: "alpine"
-            version: "3.5"
 
           # Ubuntu
           - base: "ubuntu"
@@ -84,19 +84,11 @@ jobs:
           - base: "debian"
             version: "7-slim"
 
-          # CentOS
-          - base: "centos"
-            version: "latest"
-          - base: "centos"
-            version: "8"
-          - base: "centos"
-            version: "7"
-          - base: "centos"
-            version: "6"
-
           # Python alpine
           - base: "python"
             version: "3-alpine"
+          - base: "python"
+            version: "3-alpine3.17"
           - base: "python"
             version: "3-alpine3.16"
           - base: "python"
@@ -117,8 +109,6 @@ jobs:
             version: "3-alpine3.8"
           - base: "python"
             version: "3-alpine3.7"
-          - base: "python"
-            version: "3-alpine3.6"
           - base: "python"
             version: "3.11-alpine"
           - base: "python"
