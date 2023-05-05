@@ -3,7 +3,7 @@ ARG VERSION="3.16"
 FROM ${BASE}:${VERSION}
 
 # adds file from the shinsenter/s6-overlay image
-COPY --from=shinsenter/s6-overlay / /
+COPY --from=shinsenter/s6-overlay:v3.1.4.2 / /
 
 # Tweak for alpine
 RUN if [ -x "$(command -v apk)" ] ; then apk add --no-cache bash shadow ; fi
